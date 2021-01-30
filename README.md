@@ -1,4 +1,4 @@
-# Algoritms on Ruby, Rust and Java
+# Algoritms on Python, Ruby, Rust and Java
 
 Made for these courses:
 
