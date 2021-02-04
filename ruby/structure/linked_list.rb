@@ -1,4 +1,13 @@
 class LinkedList
+  class Node
+    attr_accessor :value, :next_node
+  
+    def initialize(value:, next_node: nil)
+      @value     = value
+      @next_node = next_node
+    end
+  end
+
   attr_reader :head, :length
 
   def initialize(array = nil)
@@ -24,7 +33,7 @@ class LinkedList
   end
   
   def push(value)
-    node = LinkedListNode.new(value: value)
+    node = Node.new(value: value)
     if head.nil?
       @head = node
     else
@@ -35,7 +44,7 @@ class LinkedList
   end
 
   def prepend(value)
-    @head = LinkedListNode.new(value: value, next_node: @head)
+    @head = Node.new(value: value, next_node: @head)
     @length += 1
     value
   end
@@ -62,7 +71,7 @@ class LinkedList
   def insert(position, value)
     prev_node = node_at(position - 1)
     next_node = prev_node.next_node
-    prev_node.next_node = LinkedListNode.new(value: value, next_node: next_node)
+    prev_node.next_node = Node.new(value: value, next_node: next_node)
     @length += 1
     value
   end
@@ -118,52 +127,42 @@ class LinkedList
   end
 end
 
-class LinkedListNode
-  attr_accessor :value, :next_node
+# list = LinkedList.new
+# fail unless list.to_array == []
+# fail unless list.length == 0
 
-  def initialize(value:, next_node: nil)
-    @value     = value
-    @next_node = next_node
-  end
-end
+# list = LinkedList.new([])
+# fail unless list.to_array == []
+# fail unless list.length == 0
 
-list = LinkedList.new
-fail unless list.to_array == []
-fail unless list.length == 0
+# list = LinkedList.new([1, 2, 3])
+# fail unless list.to_array == [1, 2, 3]
+# fail unless list.length == 3
 
+# list.push(4)
+# fail unless list.length == 4
+# list.prepend(0)
+# fail unless list.to_array == [0, 1, 2, 3, 4]
+# fail unless list.length == 5
 
-list = LinkedList.new([])
-fail unless list.to_array == []
-fail unless list.length == 0
+# fail unless list.pop == 4
+# fail unless list.length == 4
+# fail unless list.pop_front == 0
+# fail unless list.length == 3
 
-list = LinkedList.new([1, 2, 3])
-fail unless list.to_array == [1, 2, 3]
-fail unless list.length == 3
-
-list.push(4)
-fail unless list.length == 4
-list.prepend(0)
-fail unless list.to_array == [0, 1, 2, 3, 4]
-fail unless list.length == 5
-
-fail unless list.pop == 4
-fail unless list.length == 4
-fail unless list.pop_front == 0
-fail unless list.length == 3
-
-list.insert(1, 9)
-fail unless list.to_array == [1, 9, 2, 3]
-fail unless list.length == 4
+# list.insert(1, 9)
+# fail unless list.to_array == [1, 9, 2, 3]
+# fail unless list.length == 4
 
 
-list.remove(0)
-fail unless list.to_array == [9, 2, 3]
-fail unless list.length == 3
+# list.remove(0)
+# fail unless list.to_array == [9, 2, 3]
+# fail unless list.length == 3
 
-list.remove(1)
-fail unless list.to_array == [9, 3]
-fail unless list.length == 2
+# list.remove(1)
+# fail unless list.to_array == [9, 3]
+# fail unless list.length == 2
 
-fail unless list.at(0) == 9
-fail unless list.at(1) == 3
-fail unless list.at(2) == nil
+# fail unless list.at(0) == 9
+# fail unless list.at(1) == 3
+# fail unless list.at(2) == nil
