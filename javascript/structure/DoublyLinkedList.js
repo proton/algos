@@ -1,4 +1,4 @@
-class LinkedList {
+class DoublyLinkedList {
   constructor(array) {
     this.head   = null
     this.tail   = null
@@ -27,7 +27,7 @@ class LinkedList {
   }
 
   push(value) {
-    const node = new LinkedListNode({value: value})
+    const node = new DoublyLinkedListNode({value: value})
     if (this.head === null) {
       this.head = node
       this.tail = node
@@ -42,7 +42,7 @@ class LinkedList {
 
   prepend(value) {
     const prevHead = this.head
-    this.head = new LinkedListNode({value: value, nextNode: prevHead})
+    this.head = new DoublyLinkedListNode({value: value, nextNode: prevHead})
     prevHead.prevNode = this.head
     this.length += 1
     return value
@@ -73,7 +73,7 @@ class LinkedList {
   insert(position, value) {
     const prevNode = this._nodeAt(position - 1)
     const nextNode = prevNode.nextNode
-    prevNode.nextNode = new LinkedListNode({value: value, prevNode: prevNode, nextNode: nextNode})
+    prevNode.nextNode = new DoublyLinkedListNode({value: value, prevNode: prevNode, nextNode: nextNode})
     this.length += 1
     return value
   }
@@ -134,7 +134,7 @@ class LinkedList {
   }
 }
 
-class LinkedListNode {
+class DoublyLinkedListNode {
   constructor({value, prevNode, nextNode}) {
     this.value    = value
     this.prevNode = prevNode
@@ -144,15 +144,15 @@ class LinkedListNode {
 
 // arrayEquals = (a, b) => Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((val, index) => val === b[index])
 
-// let list = new LinkedList
+// let list = new DoublyLinkedList
 // console.assert(arrayEquals(list.toArray(), []))
 // console.assert(list.length === 0)
 
-// list = new LinkedList([])
+// list = new DoublyLinkedList([])
 // console.assert(arrayEquals(list.toArray(), []))
 // console.assert(list.length === 0)
 
-// list = new LinkedList([1, 2, 3])
+// list = new DoublyLinkedList([1, 2, 3])
 // console.assert(arrayEquals(list.toArray(), [1, 2, 3]))
 // console.assert(list.length === 3)
 
