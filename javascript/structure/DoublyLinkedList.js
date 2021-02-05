@@ -1,6 +1,7 @@
 class LinkedList {
   constructor(array) {
     this.head   = null
+    this.tail   = null
     this.length = 0
     
     if (array) {
@@ -16,7 +17,7 @@ class LinkedList {
   }
 
   last() {
-    const node = this._lastNode()
+    const node = this.tail
     if (node) return node.value
   }
 
@@ -29,25 +30,32 @@ class LinkedList {
     const node = new LinkedListNode({value: value})
     if (this.head === null) {
       this.head = node
+      this.tail = node
     } else {
       this._lastNode().nextNode = node
+      node.prevNode = this._lastNode()
+      this.tail = node
     }
     this.length += 1
     return value
   }
 
   prepend(value) {
-    this.head = new LinkedListNode({value: value, nextNode: this.head})
+    const prevHead = this.head
+    this.head = new LinkedListNode({value: value, nextNode: prevHead})
+    prevHead.prevNode = this.head
     this.length += 1
     return value
   }
 
   pop() {
-    if (!this.head) return null
+    if (!this.tail) return null
 
-    const node = this._preLastNode()
-    const lastValue = node.nextNode.value
-    node.nextNode = null
+    const lastValue = this.tail.value
+    const node = this.tail.prevNode
+    if (node) node.nextNode = null
+    this.tail = node
+
     this.length -= 1
     return lastValue
   }
@@ -57,6 +65,7 @@ class LinkedList {
 
     const oldHead = this.head
     this.head = oldHead.nextNode
+    this.head.prevNode = null
     this.length -= 1
     return oldHead.value
   }
@@ -64,7 +73,7 @@ class LinkedList {
   insert(position, value) {
     const prevNode = this._nodeAt(position - 1)
     const nextNode = prevNode.nextNode
-    prevNode.nextNode = new LinkedListNode({value: value, nextNode: nextNode})
+    prevNode.nextNode = new LinkedListNode({value: value, prevNode: prevNode, nextNode: nextNode})
     this.length += 1
     return value
   }
@@ -73,8 +82,15 @@ class LinkedList {
     if (position === 0) return this.popFront()
 
     const prevNode = this._nodeAt(position - 1)
-    const nextNode = prevNode.nextNode
-    prevNode.nextNode = nextNode.nextNode
+    const node = prevNode.nextNode
+    const nextNode = node.nextNode
+    prevNode.nextNode = nextNode
+    if (nextNode) {
+      nextNode.prevNode = prevNode
+    } else {
+      this.tail = prevNode
+    }
+
     this.length -= 1
     return nextNode.value
   }
@@ -92,35 +108,36 @@ class LinkedList {
   }
 
   _lastNode() {
-    let node = this.head
-    while(node.nextNode) {
-      node = node.nextNode
-    }
-    return node
-  }
-
-  _preLastNode() {
-    let node = this.head
-    while(node.nextNode && node.nextNode.nextNode) {
-      node = node.nextNode
-    }
-    return node
+    return this.tail
   }
 
   _nodeAt(index) {
-    let counter = 0
-    let node = this.head
-    while(node && counter < index) {
-      node = node.nextNode
-      counter += 1
+    if (index >= this.length) return undefined
+    
+    let node
+    if (index < this.length / 2) {
+      let counter = 0
+      node = this.head
+      while(node && counter < index) {
+        node = node.nextNode
+        counter += 1
+      }
+    } else {
+      let counter = this.length - 1
+      node = this.tail
+      while(node && counter > index) {
+        node = node.prevNode
+        counter -= 1
+      }
     }
     return node
   }
 }
 
 class LinkedListNode {
-  constructor({value, nextNode}) {
+  constructor({value, prevNode, nextNode}) {
     this.value    = value
+    this.prevNode = prevNode
     this.nextNode = nextNode           
   }
 }
