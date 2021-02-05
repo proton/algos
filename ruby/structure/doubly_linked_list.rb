@@ -1,4 +1,4 @@
-class LinkedList
+class DoublyDoublyLinkedList
   class Node
     attr_accessor :value, :prev_node, :next_node
   
@@ -146,15 +146,15 @@ class LinkedList
   end
 end
 
-# list = LinkedList.new
+# list = DoublyLinkedList.new
 # fail unless list.to_array == []
 # fail unless list.length == 0
 
-# list = LinkedList.new([])
+# list = DoublyLinkedList.new([])
 # fail unless list.to_array == []
 # fail unless list.length == 0
 
-# list = LinkedList.new([1, 2, 3])
+# list = DoublyLinkedList.new([1, 2, 3])
 # fail unless list.to_array == [1, 2, 3]
 # fail unless list.length == 3
 
