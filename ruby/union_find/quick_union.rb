@@ -1,4 +1,4 @@
-class QuickFind
+class QuickUnion
   attr_reader :parents, :length
 
   def initialize(n)
@@ -7,23 +7,26 @@ class QuickFind
   end
 
   def connected?(a, b)
-    parents[a] == parents[b]
+    root(a) == root(b)
   end
 
   def union(a, b)
-    a_root = parents[a]
-    b_root = parents[b]
+    a_root = root(a)
+    b_root = root(b)
     return if a_root == b_root
 
-    parents.each_with_index do |x, i|
-      parents[i] = a_root if x == b_root
-    end
+    parents[b_root] = a_root
 
     @length -= 1
   end
+
+  private def root(x)
+    x = parents[x] until x == parents[x]
+    x
+  end
 end
 
-# uf = QuickFind.new(10)
+# uf = QuickUnion.new(10)
 # uf.union(4, 3)
 # uf.union(3, 8)
 # uf.union(6, 5)
