@@ -11,22 +11,22 @@ class SortedLinkedList:
     if array:
       for value in array:
         self.push(value)
-  
+
   def first(self):
     node = self.__first_node()
     if node:
       return node.value
-  
+
   def last(self):
     node = self.__last_node()
     if node:
       return node.value
-      
+
   def at(self, index):
     node = self.__node_at(index)
     if node:
       return node.value
-      
+
   def push(self, value):
     node = SortedLinkedList.Node(value)
     if not self.head:
@@ -62,7 +62,7 @@ class SortedLinkedList:
     self.head = self.head.next_node
     self.length -= 1
     return old_head.value
-  
+
   def remove(self, position):
     if position == 0:
       return self.pop_front()
@@ -74,13 +74,23 @@ class SortedLinkedList:
     self.length -= 1
     return next_node.value
 
+  def each(self, callback):
+    node = self.head
+    while node:
+      callback(node.value)
+      node = node.next_node
+
+  def contains(self, searchValue):
+    node = self.head
+    while node:
+      if node.value == searchValue:
+        return True
+      node = node.next_node
+    return False
+
   def to_array(self):
     array = []
-    if self.head:
-      node = self.head
-      while node:
-        array.append(node.value)
-        node = node.next_node
+    self.each(lambda value: array.append(value))
     return array
 
   def __first_node(self):
@@ -117,6 +127,11 @@ class SortedLinkedList:
 # list = SortedLinkedList([3, 2, 1])
 # assert list.to_array() == [1, 2, 3]
 # assert list.length == 3
+# assert not list.contains(0)
+# assert list.contains(1)
+# assert list.contains(2)
+# assert list.contains(3)
+# assert not list.contains(4)
 
 # list.push(4)
 # assert list.length == 4
