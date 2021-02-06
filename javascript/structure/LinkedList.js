@@ -2,7 +2,7 @@ class LinkedList {
   constructor(array) {
     this.head   = null
     this.length = 0
-    
+
     if (array) {
       for (const value of array) {
         this.push(value)
@@ -51,7 +51,7 @@ class LinkedList {
     this.length -= 1
     return lastValue
   }
-  
+
   popFront() {
     if (!this.head) return null
 
@@ -79,15 +79,26 @@ class LinkedList {
     return nextNode.value
   }
 
+  each(callback) {
+    let node = this.head
+    while(node) {
+      callback(node.value)
+      node = node.nextNode
+    }
+  }
+
+  contains(searchValue) {
+    let node = this.head
+    while(node) {
+      if (node.value == searchValue) return true
+      node = node.nextNode
+    }
+    return false
+  }
+
   toArray() {
     const array = []
-    if (this.head) {
-      let node = this.head
-      while(node) {
-        array.push(node.value)
-        node = node.nextNode
-      }
-    }
+    this.each(value => array.push(value))
     return array
   }
 
@@ -121,11 +132,11 @@ class LinkedList {
 class LinkedListNode {
   constructor({value, nextNode}) {
     this.value    = value
-    this.nextNode = nextNode           
+    this.nextNode = nextNode
   }
 }
 
-// arrayEquals = (a, b) => Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((val, index) => val === b[index])
+arrayEquals = (a, b) => Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((val, index) => val === b[index])
 
 // let list = new LinkedList
 // console.assert(arrayEquals(list.toArray(), []))
@@ -138,13 +149,17 @@ class LinkedListNode {
 // list = new LinkedList([1, 2, 3])
 // console.assert(arrayEquals(list.toArray(), [1, 2, 3]))
 // console.assert(list.length === 3)
+// console.assert(!list.contains(0))
+// console.assert(list.contains(1))
+// console.assert(list.contains(2))
+// console.assert(list.contains(3))
+// console.assert(!list.contains(4))
 
 // list.push(4)
 // console.assert(list.length === 4)
 // list.prepend(0)
 // console.assert(arrayEquals(list.toArray(), [0, 1, 2, 3, 4]))
 // console.assert(list.length === 5)
-
 
 // console.assert(list.pop() === 4)
 // console.assert(list.length === 4)

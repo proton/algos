@@ -3,7 +3,7 @@ class DoublyLinkedList {
     this.head   = null
     this.tail   = null
     this.length = 0
-    
+
     if (array) {
       for (const value of array) {
         this.push(value)
@@ -59,7 +59,7 @@ class DoublyLinkedList {
     this.length -= 1
     return lastValue
   }
-  
+
   popFront() {
     if (!this.head) return null
 
@@ -95,15 +95,26 @@ class DoublyLinkedList {
     return nextNode.value
   }
 
+  each(callback) {
+    let node = this.head
+    while(node) {
+      callback(node.value)
+      node = node.nextNode
+    }
+  }
+
+  contains(searchValue) {
+    let node = this.head
+    while(node) {
+      if (node.value == searchValue) return true
+      node = node.nextNode
+    }
+    return false
+  }
+
   toArray() {
     const array = []
-    if (this.head) {
-      let node = this.head
-      while(node) {
-        array.push(node.value)
-        node = node.nextNode
-      }
-    }
+    this.each(value => array.push(value))
     return array
   }
 
@@ -113,7 +124,7 @@ class DoublyLinkedList {
 
   _nodeAt(index) {
     if (index >= this.length) return undefined
-    
+
     let node
     if (index < this.length / 2) {
       let counter = 0
@@ -138,7 +149,7 @@ class DoublyLinkedListNode {
   constructor({value, prevNode, nextNode}) {
     this.value    = value
     this.prevNode = prevNode
-    this.nextNode = nextNode           
+    this.nextNode = nextNode
   }
 }
 
@@ -155,13 +166,17 @@ class DoublyLinkedListNode {
 // list = new DoublyLinkedList([1, 2, 3])
 // console.assert(arrayEquals(list.toArray(), [1, 2, 3]))
 // console.assert(list.length === 3)
+// console.assert(!list.contains(0))
+// console.assert(list.contains(1))
+// console.assert(list.contains(2))
+// console.assert(list.contains(3))
+// console.assert(!list.contains(4))
 
 // list.push(4)
 // console.assert(list.length === 4)
 // list.prepend(0)
 // console.assert(arrayEquals(list.toArray(), [0, 1, 2, 3, 4]))
 // console.assert(list.length === 5)
-
 
 // console.assert(list.pop() === 4)
 // console.assert(list.length === 4)
