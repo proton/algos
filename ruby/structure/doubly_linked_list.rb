@@ -104,23 +104,25 @@ class DoublyLinkedList
     node.value
   end
 
-  def contains?(value)
+  def each(&block)
     node = head
     while node
-      return true if node.value == value
+      yield node.value
       node = node.next_node
+    end
+  end
+
+  def contains?(search_value)
+    each do |value|
+      return true if value == search_value
     end
     false
   end
 
   def to_array
     array = []
-    if head
-      node = head
-      while node
-        array << node.value
-        node = node.next_node
-      end
+    each do |value|
+      array << value
     end
     array
   end
