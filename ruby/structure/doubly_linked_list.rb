@@ -1,7 +1,7 @@
-class DoublyDoublyLinkedList
+class DoublyLinkedList
   class Node
     attr_accessor :value, :prev_node, :next_node
-  
+
     def initialize(value:, prev_node: nil, next_node: nil)
       @value     = value
       @prev_node = prev_node
@@ -25,7 +25,7 @@ class DoublyDoublyLinkedList
   def first
     first_node&.value
   end
-  
+
   def last
     last_node&.value
   end
@@ -33,10 +33,10 @@ class DoublyDoublyLinkedList
   def at(index)
     node_at(index)&.value
   end
-  
+
   def push(value)
     node = Node.new(value: value)
-    if head.nil?
+    if length == 0
       @head = node
       @tail = node
     else
@@ -63,13 +63,13 @@ class DoublyDoublyLinkedList
     node = tail.prev_node
     node.next_node = nil if node
     @tail = node
-  
+
     @length -= 1
     last_value
   end
 
   def pop_front
-    return nil if head.nil?
+    return nil if length == 0
 
     old_head = head
     @head = head.next_node
@@ -85,7 +85,7 @@ class DoublyDoublyLinkedList
     @length += 1
     value
   end
-  
+
   def remove(position)
     return pop_front if position == 0
 
@@ -102,6 +102,15 @@ class DoublyDoublyLinkedList
     @length -= 1
 
     node.value
+  end
+
+  def contains?(value)
+    node = head
+    while node
+      return true if node.value == value
+      node = node.next_node
+    end
+    false
   end
 
   def to_array
@@ -157,6 +166,11 @@ end
 # list = DoublyLinkedList.new([1, 2, 3])
 # fail unless list.to_array == [1, 2, 3]
 # fail unless list.length == 3
+# fail if     list.contains?(0)
+# fail unless list.contains?(1)
+# fail unless list.contains?(2)
+# fail unless list.contains?(3)
+# fail if     list.contains?(4)
 
 # list.push(4)
 # fail unless list.length == 4

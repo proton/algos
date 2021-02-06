@@ -1,7 +1,7 @@
 class SortedLinkedList
   class Node
     attr_accessor :value, :next_node
-  
+
     def initialize(value:, next_node: nil)
       @value     = value
       @next_node = next_node
@@ -23,7 +23,7 @@ class SortedLinkedList
   def first
     first_node&.value
   end
-  
+
   def last
     last_node&.value
   end
@@ -31,10 +31,10 @@ class SortedLinkedList
   def at(index)
     node_at(index)&.value
   end
-  
+
   def push(value)
     node = Node.new(value: value)
-    if head.nil?
+    if length == 0
       @head = node
     elsif head.value >= value
       old_head = head
@@ -52,7 +52,7 @@ class SortedLinkedList
   end
 
   def pop
-    return nil if head.nil?
+    return nil if length == 0
 
     node = pre_last_node
     last_value = node.next_node.value
@@ -62,14 +62,14 @@ class SortedLinkedList
   end
 
   def pop_front
-    return nil if head.nil?
+    return nil if length == 0
 
     old_head = head
     @head = head.next_node
     @length -= 1
     old_head.value
   end
-  
+
   def remove(position)
     return pop_front if position == 0
 
@@ -80,6 +80,15 @@ class SortedLinkedList
     @length -= 1
 
     next_node.value
+  end
+
+  def contains?(value)
+    node = head
+    while node
+      return true if node.value == value
+      node = node.next_node
+    end
+    false
   end
 
   def to_array
@@ -132,6 +141,11 @@ end
 # list = SortedLinkedList.new([3, 2, 1])
 # fail unless list.to_array == [1, 2, 3]
 # fail unless list.length == 3
+# fail if     list.contains?(0)
+# fail unless list.contains?(1)
+# fail unless list.contains?(2)
+# fail unless list.contains?(3)
+# fail if     list.contains?(4)
 
 # list.push(4)
 # fail unless list.length == 4
