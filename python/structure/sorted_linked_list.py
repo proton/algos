@@ -1,4 +1,4 @@
-class LinkedList:
+class SortedLinkedList:
   class Node:
     def __init__(self, value, next_node = None):
       self.value     = value
@@ -28,17 +28,21 @@ class LinkedList:
       return node.value
       
   def push(self, value):
-    node = LinkedList.Node(value)
+    node = SortedLinkedList.Node(value)
     if not self.head:
       self.head = node
+    elif self.head.value >= value:
+      old_head = self.head
+      node.next_node = old_head
+      self.head = node
     else:
-      self.__last_node().next_node = node
+      prev_node = self.head
+      while prev_node.next_node and prev_node.next_node.value < value:
+        prev_node = prev_node.next_node
+      next_node = prev_node.next_node
+      prev_node.next_node = node
+      node.next_node = next_node
     self.length += 1
-
-  def prepend(self, value):
-    self.head = LinkedList.Node(value, next_node = self.head)
-    self.length += 1
-    return value
 
   def pop(self):
     if not self.head:
@@ -58,13 +62,6 @@ class LinkedList:
     self.head = self.head.next_node
     self.length -= 1
     return old_head.value
-
-  def insert(self, position, value):
-    prev_node = self.__node_at(position - 1)
-    next_node = prev_node.next_node
-    prev_node.next_node = LinkedList.Node(value, next_node = next_node)
-    self.length += 1
-    return value
   
   def remove(self, position):
     if position == 0:
@@ -109,21 +106,21 @@ class LinkedList:
       counter += 1
     return node
 
-# list = LinkedList()
+# list = SortedLinkedList()
 # assert list.to_array() == []
 # assert list.length == 0
 
-# list = LinkedList([])
+# list = SortedLinkedList([])
 # assert list.to_array() == []
 # assert list.length == 0
 
-# list = LinkedList([1, 2, 3])
+# list = SortedLinkedList([3, 2, 1])
 # assert list.to_array() == [1, 2, 3]
 # assert list.length == 3
 
 # list.push(4)
 # assert list.length == 4
-# list.prepend(0)
+# list.push(0)
 # assert list.to_array() == [0, 1, 2, 3, 4]
 # assert list.length == 5
 
@@ -132,19 +129,18 @@ class LinkedList:
 # assert list.pop_front() == 0
 # assert list.length == 3
 
-# list.insert(1, 9)
-# assert list.to_array() == [1, 9, 2, 3]
+# list.push(9)
+# assert list.to_array() == [1, 2, 3, 9]
 # assert list.length == 4
 
-
 # list.remove(0)
-# assert list.to_array() == [9, 2, 3]
+# assert list.to_array() == [2, 3, 9]
 # assert list.length == 3
 
 # list.remove(1)
-# assert list.to_array() == [9, 3]
+# assert list.to_array() == [2, 9]
 # assert list.length == 2
 
-# assert list.at(0) == 9
-# assert list.at(1) == 3
+# assert list.at(0) == 2
+# assert list.at(1) == 9
 # assert list.at(2) == None
