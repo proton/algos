@@ -2,7 +2,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
-class LinkedList<T> {
+class LinkedList<T extends Comparable<T>> {
   class Node<T> {
     T value;
     Node<T> nextNode;
@@ -75,17 +75,19 @@ class LinkedList<T> {
     var node = new Node<T>(value);
     if (head == null) {
       head = node;
+    } else if (head.value.compareTo(value) >= 0) {
+      var oldHead = head;
+      node.nextNode = oldHead;
+      head = node;
     } else {
-      _lastNode().nextNode = node;
+      var prevNode = head;
+      while (prevNode.nextNode != null && prevNode.nextNode.value.compareTo(value) < 0) {
+        prevNode = prevNode.nextNode;
+      }
+      var nextNode = prevNode.nextNode;
+      prevNode.nextNode = node;
+      node.nextNode = nextNode;
     }
-    length += 1;
-    return value;
-  }
-
-  public T prepend(T value) {
-    var node = new Node<T>(value);
-    node.nextNode = head;
-    head = node;
     length += 1;
     return value;
   }
@@ -107,16 +109,6 @@ class LinkedList<T> {
     head = oldHead.nextNode;
     length -= 1;
     return oldHead.value;
-  }
-
-  public T insert(int position, T value) {
-    var prevNode = _nodeAt(position - 1);
-    var nextNode = prevNode.nextNode;
-    var node = new Node<T>(value);
-    node.nextNode = nextNode;
-    prevNode.nextNode = node;
-    length += 1;
-    return value;
   }
 
   public T remove(int position) {
@@ -187,7 +179,7 @@ class LinkedList<T> {
   //   assert list.toArray().equals(List.of());
   //   assert list.length == 0;
 
-  //   Integer[] init2 = {1, 2, 3};
+  //   Integer[] init2 = {3, 2, 1};
   //   list = new LinkedList<Integer>(init2);
   //   assert list.toArray().equals(List.of(1, 2, 3));
   //   assert list.length == 3;
@@ -199,7 +191,7 @@ class LinkedList<T> {
 
   //   list.push(4);
   //   assert list.length == 4;
-  //   list.prepend(0);
+  //   list.push(0);
   //   assert list.toArray().equals(List.of(0, 1, 2, 3, 4));
   //   assert list.length == 5;
 
@@ -208,20 +200,20 @@ class LinkedList<T> {
   //   assert list.popFront() == 0;
   //   assert list.length == 3;
 
-  //   list.insert(1, 9);
-  //   assert list.toArray().equals(List.of(1, 9, 2, 3));
+  //   list.push(9);
+  //   assert list.toArray().equals(List.of(1, 2, 3, 9));
   //   assert list.length == 4;
 
   //   list.remove(0);
-  //   assert list.toArray().equals(List.of(9, 2, 3));
+  //   assert list.toArray().equals(List.of(2, 3, 9));
   //   assert list.length == 3;
 
   //   list.remove(1);
-  //   assert list.toArray().equals(List.of(9, 3));
+  //   assert list.toArray().equals(List.of(2, 9));
   //   assert list.length == 2;
 
-  //   assert list.at(0) == 9;
-  //   assert list.at(1) == 3;
+  //   assert list.at(0) == 2;
+  //   assert list.at(1) == 9;
   //   assert list.at(2) == null;
   // }
 }
