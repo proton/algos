@@ -46,22 +46,13 @@ class Heap
   end
 
   private def heapify!(i)
-    left_child = 0
-    right_child = 0
-    largest_child = 0
-
     loop do
       left_child  = 2 * i + 1
       right_child = 2 * i + 2
       largest_child = i
 
-      if left_child < arr.size && arr[left_child] > arr[largest_child]
-        largest_child = left_child
-      end
-
-      if right_child < arr.size && arr[right_child] > arr[largest_child]
-        largest_child = right_child
-      end
+      largest_child = left_child  if left_child  < arr.size && arr[left_child]  > arr[largest_child]
+      largest_child = right_child if right_child < arr.size && arr[right_child] > arr[largest_child]
 
       break if largest_child == i
 
@@ -95,4 +86,3 @@ end
 #   fail unless heaps.map(&:max).uniq.size == 1
 #   fail unless heaps.map(&:pop).uniq.size == 1
 # end
-
