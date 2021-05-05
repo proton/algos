@@ -4,25 +4,23 @@ def quick_sort(array, start: nil, finish: nil)
 
   return if start >= finish
 
-  divider = array[start]
-  left    = start + 1
-  right   = finish
+  divider = array.values_at(start, start + (finish - start) / 2, finish).sort[1]
 
+  left  = start
+  right = finish
   while left <= right
-    left  += 1 while left <= right && array[left]  <  divider
-    right -= 1 while left <= right && array[right] >= divider
+    left  += 1 while array[left]  < divider
+    right -= 1 while array[right] > divider
 
     if left <= right
       array[left], array[right] = array[right], array[left]
-      left += 1
+      left  += 1
       right -= 1
     end
   end
 
-  array[start], array[right] = array[right], array[start]
-
-  quick_sort(array, start: start,     finish: right - 1)
-  quick_sort(array, start: right + 1, finish: finish   )
+  quick_sort(array, start: start, finish: right)
+  quick_sort(array, start: left,  finish: finish)
 
   array
 end
