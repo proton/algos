@@ -1,46 +1,28 @@
-def quick_sort(array, start: nil, finish: nil, buffer: nil)
+def quick_sort(array, start: nil, finish: nil)
   start  ||= 0
   finish ||= array.size - 1
-  buffer ||= Array.new(array.size - 1)
 
   return if start >= finish
 
   divider = array[start]
+  left    = start + 1
+  right   = finish
 
-  low_i  = -1
-  high_i =  0
+  while left <= right
+    left  += 1 while left <= right && array[left]  <  divider
+    right -= 1 while left <= right && array[right] >= divider
 
-  (start + 1).upto(finish) do |i|
-    x = array[i]
-    if x < divider
-      low_i += 1
-      buffer[low_i] = x
-    else
-      high_i -= 1
-      buffer[high_i] = x
+    if left <= right
+      array[left], array[right] = array[right], array[left]
+      left += 1
+      right -= 1
     end
   end
 
-  index = start
-  while low_i >= 0
-    array[index] = buffer[low_i]
-    index += 1
-    low_i -= 1
-  end
+  array[start], array[right] = array[right], array[start]
 
-  array[index] = divider
-
-  midpoint = index
-
-  index += 1
-  while high_i < 0
-    array[index] = buffer[high_i]
-    index += 1
-    high_i += 1
-  end
-
-  quick_sort(array, start: start,        finish: midpoint - 1, buffer: buffer)
-  quick_sort(array, start: midpoint + 1, finish: finish,       buffer: buffer)
+  quick_sort(array, start: start,     finish: right - 1)
+  quick_sort(array, start: right + 1, finish: finish   )
 
   array
 end
