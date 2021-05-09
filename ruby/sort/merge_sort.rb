@@ -14,15 +14,10 @@ def merge_sort(array, start: nil, finish: nil, buffer: nil)
   j = 0
   b = 0
   loop do
-    if i == mid + 1 - start
-      ((j + mid + 1)..finish).each do |k|
-        buffer[b] = array[k]
-        b += 1
-      end
-      break
-    end
-    if j == finish - mid
-      ((i + start)..mid).each do |k|
+    remaining = (j + mid + 1)..finish if i == mid + 1 - start
+    remaining = (i + start)..mid      if j == finish - mid
+    if remaining
+      remaining.each do |k|
         buffer[b] = array[k]
         b += 1
       end
@@ -33,12 +28,11 @@ def merge_sort(array, start: nil, finish: nil, buffer: nil)
     if x < y
       buffer[b] = x
       i += 1
-      b += 1
     else
       buffer[b] = y
       j += 1
-      b += 1
     end
+    b += 1
   end
   (0...b).each do |k|
     array[start + k] = buffer[k]
