@@ -1,6 +1,6 @@
 def counting_sort(array)
   min = max = array[0]
-  (1...array.size).each do |x|
+  array.each do |x|
     min = x if x < min
     max = x if x > max
   end
@@ -21,11 +21,11 @@ def counting_sort(array)
   array
 end
 
-# array = 100.times.map { rand(100) }
-# array1 = array.sort
-# array2 = counting_sort(array)
+array = 100.times.map { rand(100) }
+array1 = array.sort
+array2 = counting_sort(array)
 
-# p array1
-# p array2
+p array1
+p array2
 
-# fail unless array1 == array2
+fail unless array1 == array2
