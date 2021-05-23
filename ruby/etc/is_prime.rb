@@ -4,7 +4,7 @@ def is_prime?(num)
   # Fermat's little theorem
   10.times do
     i = rand(1...num)
-    return false if i ** (num - 1) % num != 1
+    return false if i.pow(num - 1, num) != 1
   end
 
   # A head-on solution
