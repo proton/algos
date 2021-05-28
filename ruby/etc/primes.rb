@@ -1,6 +1,7 @@
 def primes(max)
-  return [] if max <  2
+  return [] if max < 2
 
+  l = Array.new(max + 1) { |x| x % 2 == 1 }
   l = [true] * (max + 1)
 
   arr = [2]
@@ -11,7 +12,7 @@ def primes(max)
     if l[p]
       arr << p
 
-      factor = 2
+      factor = 3
       p_mult = p * factor
 
       while p_mult <= max
