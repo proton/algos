@@ -7,8 +7,8 @@ def merge_sort(array, start: nil, finish: nil, buffer: nil)
 
   mid = (finish - start) / 2 + start
 
-  merge_sort(array, start: start,   finish: mid)
-  merge_sort(array, start: mid + 1, finish: finish)
+  merge_sort(array, start: start,   finish: mid,    buffer: buffer)
+  merge_sort(array, start: mid + 1, finish: finish, buffer: buffer)
 
   i = 0
   j = 0
