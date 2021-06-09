@@ -30,11 +30,11 @@ def quick_sort_dijkstra(array, start: nil, finish: nil)
   array
 end
 
-array = 100.times.map { rand(100) }
-array1 = array.sort
-array2 = quick_sort_dijkstra(array)
+# array = 100.times.map { rand(100) }
+# array1 = array.sort
+# array2 = quick_sort_dijkstra(array)
 
-p array1
-p array2
+# p array1
+# p array2
 
-fail unless array1 == array2
+# fail unless array1 == array2
