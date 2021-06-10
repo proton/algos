@@ -92,25 +92,23 @@ class AvlTree
     array
   end
 
-  private def find_node(value, parent: root, grand_parent: nil)
+  private def find_node(value, parent: root)
     return if parent.nil?
 
     if parent.value == value
-      [parent, grand_parent]
+      parent
     elsif value > parent.value
-      find_node(value, parent: parent.right, grand_parent: parent)
+      find_node(value, parent: parent.right)
     else
-      find_node(value, parent: parent.left,  grand_parent: parent)
+      find_node(value, parent: parent.left)
     end
   end
 
   private def insert_node(node, value)
-    if node.nil?
-      return AvlTreeNode.new(value)
-    end
+    return AvlTreeNode.new(value) unless node
 
     if value < node.value
-      node.left  = insert_node(node.left, value)
+      node.left  = insert_node(node.left,  value)
     else
       node.right = insert_node(node.right, value)
     end
@@ -148,9 +146,8 @@ class AvlTree
   end
 
   private def rotate_right(root)
-    new_root = root.left
-
-    root.left = new_root.right
+    new_root       = root.left
+    root.left      = new_root.right
     new_root.right = root
 
     root.update_height
