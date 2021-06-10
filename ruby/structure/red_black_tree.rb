@@ -63,6 +63,7 @@ class RedBlackTree
   end
 
   def insert(value)
+    p [:before, to_array]
     if root.nil?
       @root = RedBlackTreeNode.new(value, color: :black)
     else
@@ -70,10 +71,12 @@ class RedBlackTree
       node.make_red
       balance_insertion(node)
     end
+    p [:after, to_array]
     @size += 1
   end
 
   def balance_insertion(node)
+    p [:balance_insertion, node.value]
     while node.parent&.red?
       parent = node.parent
       grandparent = node.grandparent
@@ -105,57 +108,52 @@ class RedBlackTree
             rotate_right(node)
           end
           parent.make_black
-          grandparent&.make_red
-          rotate_left(grandparent)
+          if grandparent
+            grandparent.make_red
+            rotate_left(grandparent)
+          end
         end
       end
     end
     root.make_black
   end
 
-  def rotate_left(node)
-    pivot  = node.right
-    parent = node.parent
-
-    pivot.parent = parent
+  def replace(node1, node2)
+    parent = node1.parent
+    node2.parent = parent
 
     if parent
-      if parent.left == node
-        parent.left = pivot
+      if node1.left_child?
+        parent.left  = node2
       else
-        parent.right = pivot
+        parent.right = node2
       end
+    else
+      @root = node2
     end
+  end
+
+  def rotate_left(node)
+    p [:rotate_left, node.value, to_array]
+    pivot = node.right # 2
+
+    replace(node, pivot)
 
     node.right = pivot.left
+    pivot.left.parent = node if pivot.left
 
-    if pivot.left
-      pivot.left.parent = node
-    end
-
-    node.parent = pivot
-    pivot.left = node
+    node.parent = pivot # 2
+    pivot.left  = node  # 1
   end
 
   def rotate_right(node)
-    pivot  = node.left
-    parent = node.parent
+    p [:rotate_right, node.value, to_array]
+    pivot = node.left
 
-    pivot.parent = parent
-
-    if parent
-      if parent.left == node
-        parent.left = pivot
-      else
-        parent.right = pivot
-      end
-    end
+    replace(node, pivot)
 
     node.left = pivot.right
-
-    if pivot.right
-      pivot.right.parent = node
-    end
+    pivot.right.parent = node if pivot.right
 
     node.parent = pivot
     pivot.right = node
@@ -204,6 +202,7 @@ class RedBlackTree
   end
 
   private def insert_node(node, value)
+    p [:insert_node, node.value, value]
     if value > node.value
       if node.right
         return insert_node(node.right, value)
