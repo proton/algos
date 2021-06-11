@@ -63,7 +63,6 @@ class RedBlackTree
   end
 
   def insert(value)
-    p [:before, to_array]
     if root.nil?
       @root = RedBlackTreeNode.new(value, color: :black)
     else
@@ -71,12 +70,10 @@ class RedBlackTree
       node.make_red
       balance_insertion(node)
     end
-    p [:after, to_array]
     @size += 1
   end
 
   def balance_insertion(node)
-    p [:balance_insertion, node.value]
     while node.parent&.red?
       parent = node.parent
       grandparent = node.grandparent
@@ -118,6 +115,8 @@ class RedBlackTree
     root.make_black
   end
 
+  # This is actually puts node2 in place of node1 and makes node1 a child of node2
+  # TODO: rename this method properly
   def replace(node1, node2)
     parent = node1.parent
     node2.parent = parent
@@ -131,31 +130,31 @@ class RedBlackTree
     else
       @root = node2
     end
+
+    node1.parent = node2
   end
 
   def rotate_left(node)
-    p [:rotate_left, node.value, to_array]
-    pivot = node.right # 2
+    pivot = node.right
 
     replace(node, pivot)
 
     node.right = pivot.left
     pivot.left.parent = node if pivot.left
 
-    node.parent = pivot # 2
-    pivot.left  = node  # 1
+    pivot.left = node
   end
 
   def rotate_right(node)
-    p [:rotate_right, node.value, to_array]
     pivot = node.left
 
     replace(node, pivot)
 
+    # TODO: replace with method call:
     node.left = pivot.right
     pivot.right.parent = node if pivot.right
 
-    node.parent = pivot
+    # TODO: replace with method call:
     pivot.right = node
   end
 
@@ -202,7 +201,6 @@ class RedBlackTree
   end
 
   private def insert_node(node, value)
-    p [:insert_node, node.value, value]
     if value > node.value
       if node.right
         return insert_node(node.right, value)
@@ -223,7 +221,7 @@ class RedBlackTree
   end
 end
 
-arr = 100.times.map { rand(1000) }.uniq
+arr = 1000.times.map { rand(1000) }.uniq
 tree = RedBlackTree.new(arr)
 
 arr.each do |value|
