@@ -35,6 +35,10 @@ class RedBlackTreeNode
     parent&.parent
   end
 
+  def brother
+    parent&.child(left_child? ? :right : :left)
+  end
+
   def uncle
     gp = grandparent
     return unless gp
@@ -89,7 +93,7 @@ class RedBlackTree
     @size += 1
   end
 
-  def balance_insertion(node)
+  private def balance_insertion(node)
     while node.parent&.red?
       parent = node.parent
       grandparent = node.grandparent
@@ -178,11 +182,11 @@ class RedBlackTree
 
     if node.childless?
       parent.set_child(node.left_child? ? :left : :right, nil)
-      # TODO: balance me
+      balance_deletion(node)
     elsif node.children_count == 1
       child = node.left || node.right
       parent.set_child(node.left_child? ? :left : :right, child)
-      # TODO: balance me
+      balance_deletion(node)
     else # node.children_count == 2
       next_node = node.right
       next_node = next_node.left while next_node.left
@@ -190,6 +194,65 @@ class RedBlackTree
       node.value = next_node.value
       remove_from_parent(next_node)
     end
+  end
+
+  private def balance_deletion(node)
+    return if node.red?
+    return if node.root?
+
+    until node.root? || node.red?
+      parent  = node.parent
+      brother = node.brother
+
+      if node.left_child?
+        if brother.red?
+          brother.make_black
+          parent.make_red
+          rotate_left(parent)
+        end
+
+        if brother.left&.black? || brother.right&.black?
+          brother.make_red
+        else
+          if brother.right&.black?
+            brother.left.make_black
+            brother.make_red
+            rotate_right(brother)
+          end
+
+          brother.color = parent.color
+          parent.make_black
+          brother.right.make_black
+          rotate_left(parent)
+          node = root
+        end
+      else # node.right_child?
+        if brother.red?
+          brother.make_black
+          parent.make_red
+          rotate_right(parent)
+        end
+
+        if brother.left&.black? || brother.right&.black?
+          brother.make_red
+        else
+          if brother.left&.black?
+            brother.right.make_black
+            brother.make_red
+            rotate_left(brother)
+          end
+
+          brother.color = parent.color
+          parent.make_black
+          brother.left.make_black
+          rotate_right(node.parent)
+          node = root
+        end
+      end
+    end
+
+    node.make_black
+    root.make_black
   end
 
   def has?(value)
