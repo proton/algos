@@ -46,6 +46,14 @@ class RedBlackTreeNode
     end
   end
 
+  def childless?
+    children_count == 0
+  end
+
+  def children_count
+    (left ? 1 : 0) + (right ? 1 : 0)
+  end
+
   def child(direction)
     public_send(direction)
   end
@@ -153,21 +161,35 @@ class RedBlackTree
   end
 
   def delete(value)
-    # TODO: implement
+    node, parent = find_node(value)
+    return unless node
 
-    # node, parent_node = find_node(value)
-    # if node
-    #   if parent_node
-    #     if parent_node.left == node
-    #       parent_node.left = nil
-    #     else
-    #       parent_node.right = nil
-    #     end
-    #   else # it's root
-    #     @root = nil
-    #   end
-    #   @size -= 1
-    # end
+    if parent.nil? # it's root
+      @root = nil
+    else
+      remove_from_parent(node)
+    end
+
+    @size -= 1
+  end
+
+  private def remove_from_parent(node)
+    parent = node.parent
+
+    if node.childless?
+      parent.set_child(node.left_child? ? :left : :right, nil)
+      # TODO: balance me
+    elsif node.children_count == 1
+      child = node.left || node.right
+      parent.set_child(node.left_child? ? :left : :right, child)
+      # TODO: balance me
+    else # node.children_count == 2
+      next_node = node.right
+      next_node = next_node.left while next_node.left
+
+      node.value = next_node.value
+      remove_from_parent(next_node)
+    end
   end
 
   def has?(value)
@@ -228,12 +250,12 @@ end
 
 fail unless tree.to_array == arr.sort
 
-# arr.each do |value|
-#   tree.delete(value)
-#   if tree.has?(value)
-#     p [:has, value, tree.to_array]
-#     fail
-#   end
-# end
+arr.each do |value|
+  tree.delete(value)
+  if tree.has?(value)
+    p [:has, value, tree.to_array]
+    fail
+  end
+end
 
-# fail unless tree.to_array == []
+fail unless tree.to_array == []
