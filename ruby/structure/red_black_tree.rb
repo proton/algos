@@ -46,6 +46,14 @@ class RedBlackTreeNode
     end
   end
 
+  def child(direction)
+    public_send(direction)
+  end
+
+  def set_child(direction, node)
+    public_send("#{direction}=", node)
+  end
+
   def root?
     parent.nil?
   end
@@ -115,47 +123,33 @@ class RedBlackTree
     root.make_black
   end
 
-  # This is actually puts node2 in place of node1 and makes node1 a child of node2
-  # TODO: rename this method properly
-  def replace(node1, node2)
-    parent = node1.parent
-    node2.parent = parent
-
-    if parent
-      if node1.left_child?
-        parent.left  = node2
-      else
-        parent.right = node2
-      end
-    else
-      @root = node2
-    end
-
-    node1.parent = node2
-  end
-
   def rotate_left(node)
-    pivot = node.right
-
-    replace(node, pivot)
-
-    node.right = pivot.left
-    pivot.left.parent = node if pivot.left
-
-    pivot.left = node
+    rotate(node, :left)
   end
 
   def rotate_right(node)
-    pivot = node.left
+    rotate(node, :right)
+  end
 
-    replace(node, pivot)
+  def rotate(node, direction)
+    adirection = direction == :right ? :left : :right
 
-    # TODO: replace with method call:
-    node.left = pivot.right
-    pivot.right.parent = node if pivot.right
+    pivot  = node.child(adirection)
+    parent = node.parent
+    pivot.parent = parent
 
-    # TODO: replace with method call:
-    pivot.right = node
+    if parent
+      parent.set_child(node.left_child? ? :left : :right, pivot)
+    else
+      @root = pivot
+    end
+
+    node.parent = pivot
+    node.set_child(adirection, pivot.child(direction))
+
+    brother = pivot.child(direction)
+    brother.parent = node if brother
+    pivot.set_child(direction, node)
   end
 
   def delete(value)
