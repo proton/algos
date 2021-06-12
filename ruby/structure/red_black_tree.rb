@@ -147,14 +147,11 @@ class RedBlackTree
     adirection = direction == :right ? :left : :right
 
     pivot  = node.child(adirection)
+    return unless pivot
     parent = node.parent
     pivot.parent = parent
 
-    if parent
-      parent.set_child(node.left_child? ? :left : :right, pivot)
-    else
-      @root = pivot
-    end
+    set_child(parent, node.left_child? ? :left : :right, pivot)
 
     node.parent = pivot
     node.set_child(adirection, pivot.child(direction))
@@ -168,24 +165,25 @@ class RedBlackTree
     node, parent = find_node(value)
     return unless node
 
-    if parent.nil? # it's root
-      @root = nil
-    else
-      remove_from_parent(node)
-    end
+    remove_from_parent(node)
+
+    # if parent.nil? # it's root
+    #   @root = nil # !!! дети переходят в корень!
+
+    # else
+    #   remove_from_parent(node)
+    # end
 
     @size -= 1
   end
 
   private def remove_from_parent(node)
-    parent = node.parent
-
     if node.childless?
-      parent.set_child(node.left_child? ? :left : :right, nil)
+      set_child(node.parent, node.left_child? ? :left : :right, nil)
       balance_deletion(node)
     elsif node.children_count == 1
       child = node.left || node.right
-      parent.set_child(node.left_child? ? :left : :right, child)
+      set_child(node.parent, node.left_child? ? :left : :right, child)
       balance_deletion(node)
     else # node.children_count == 2
       next_node = node.right
@@ -193,6 +191,15 @@ class RedBlackTree
 
       node.value = next_node.value
       remove_from_parent(next_node)
+    end
+  end
+
+  private def set_child(parent, direction, child)
+    if parent
+      parent.set_child(direction, child)
+      child.parent = parent if child
+    else
+      @root = child
     end
   end
 
@@ -205,46 +212,50 @@ class RedBlackTree
       brother = node.brother
 
       if node.left_child?
-        if brother.red?
+        if brother&.red?
           brother.make_black
           parent.make_red
           rotate_left(parent)
         end
 
-        if brother.left&.black? || brother.right&.black?
+        if brother&.left&.black? || brother&.right&.black?
           brother.make_red
         else
-          if brother.right&.black?
+          if brother&.right&.black?
             brother.left.make_black
             brother.make_red
             rotate_right(brother)
           end
 
-          brother.color = parent.color
+          if brother
+            brother.color = parent.color
+            brother.right&.make_black
+          end
           parent.make_black
-          brother.right.make_black
           rotate_left(parent)
           node = root
         end
       else # node.right_child?
-        if brother.red?
+        if brother&.red?
           brother.make_black
           parent.make_red
           rotate_right(parent)
         end
 
-        if brother.left&.black? || brother.right&.black?
+        if brother&.left&.black? || brother&.right&.black?
           brother.make_red
         else
-          if brother.left&.black?
+          if brother&.left&.black?
             brother.right.make_black
             brother.make_red
             rotate_left(brother)
           end
 
-          brother.color = parent.color
+          if brother
+            brother.color = parent.color
+            brother.left&.make_black
+          end
           parent.make_black
-          brother.left.make_black
           rotate_right(node.parent)
           node = root
         end
@@ -300,25 +311,60 @@ class RedBlackTree
   end
 end
 
-arr = 1000.times.map { rand(1000) }.uniq
-tree = RedBlackTree.new(arr)
+# arr = 100.times.map { rand(1000) }.uniq
+# arr1 = arr[0...(arr.size / 2 - 1)]
+# arr2 = arr[(arr.size / 2 - 1)..-1]
 
-arr.each do |value|
-  unless tree.has?(value)
-    p tree.size
-    p [:not_have, value, tree.to_array]
-    fail
-  end
-end
+# tree = RedBlackTree.new(arr1)
 
-fail unless tree.to_array == arr.sort
+# arr1.each do |value|
+#   unless tree.to_array.size == tree.size
+#     p [:size_dont_match, __LINE__]
+#     p tree.to_array
+#     p [tree.to_array.size, tree.size]
+#     fail
+#   end
+#   unless tree.has?(value)
+#     p tree.size
+#     p [:not_have, value, tree.to_array, __LINE__]
+#     fail
+#   end
+# end
 
-arr.each do |value|
-  tree.delete(value)
-  if tree.has?(value)
-    p [:has, value, tree.to_array]
-    fail
-  end
-end
+# fail unless tree.to_array == arr1.sort
 
-fail unless tree.to_array == []
+# arr1.each do |value|
+#   old_root = tree.root.value
+#   before = tree.to_array
+#   tree.delete(value)
+#   unless tree.to_array.size == tree.size
+#     p [:size_dont_match, __LINE__]
+#     p tree.to_array
+#     p [tree.to_array.size, tree.size]
+#     #
+#     p [:delete, value]
+#     p before
+#     p tree.to_array
+#     p [old_root, tree.root.value]
+
+#     fail
+#   end
+#   if tree.has?(value)
+#     p [:has, value, tree.to_array, __LINE__]
+#     fail
+#   end
+
+#   value2 = arr2.pop
+#   tree.insert(value2)
+#   unless tree.to_array.size == tree.size
+#     p [:size_dont_match, __LINE__]
+#     p tree.to_array
+#     p [tree.to_array.size, tree.size]
+#     fail
+#   end
+#   unless tree.has?(value2)
+#     p tree.size
+#     p [:not_have, value2, tree.to_array, __LINE__]
+#     fail
+#   end
+# end
