@@ -24,7 +24,7 @@ def knuth_morris_pratt(string, substring)
   i = j = 0
   found = []
 
-  while i < string.size do
+  while i < string.size
     if string[i] == substring[j]
       i += 1
       j += 1
