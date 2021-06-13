@@ -1,12 +1,10 @@
 # TODO: unfinished
 
 class TrieNode
-  attr_accessor :start, :finish, :min_idx, :children
+  attr_accessor :children, :count
 
-  def initialize(start: 0, finish: 0, min_idx: 0)
-    @start    = start
-    @finish   = finish
-    # @min_idx  = min_idx
+  def initialize
+    @count    = 0
     @children = {}
   end
 end
@@ -20,30 +18,27 @@ class Trie
     @text = text
     @root = TrieNode.new
 
-    text.scan(REGEX).each { |word| add(word.downcase) }
+    text.scan(REGEX).each do |word|
+      add(word.downcase)
+    end
   end
 
-  def find(substring)
-    positions = []
-
+  def count(string)
     node = root
-    substring.each_char.with_index do |char, index|
+    string.each_char do |char|
       node = node.children[char]
-      break if node.nil?
-
-      positions << node.start if node.finish == index
+      return 0 if node.nil?
     end
-
-    positions
+    node.count
   end
 
   private def add(word)
     node = root
     word.each_char.with_index do |char, index|
-      node.children[char] ||= TrieNode.new(start: index)
+      node.children[char] ||= TrieNode.new
       node = node.children[char]
     end
-    node.finish = word.size - 1
+    node.count += 1
   end
 end
 
@@ -53,9 +48,7 @@ TEXT
 
 trie = Trie.new(text)
 
-p trie.find("dolor")
-
-fail unless trie.find("dolor") == [12, 114, 222]
-fail unless trie.find("ipsum") == [6, 158]
-fail unless trie.find("lorem") == [0]
-fail unless trie.find("nonexistent") == []
+fail unless trie.count("dolor") == 2
+fail unless trie.count("ipsum") == 1
+fail unless trie.count("lorem") == 1
+fail unless trie.count("nonexistent") == 0
