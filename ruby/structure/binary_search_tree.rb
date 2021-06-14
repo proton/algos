@@ -66,17 +66,13 @@ class BinarySearchTree
       return
     end
 
-    if node.has_no_children?
-      parent_node.replace_child(node, nil)
-    elsif node.has_both_children?
-      successor = node.right
-      successor = successor.left while successor.left
+    if node.has_both_children?
+      successor  = node.right
+      successor  = successor.left while successor.left
       node.value = successor.value
       delete(successor.value)
-    elsif node.has_left_child?
-      parent_node.replace_child(node, node.left)
-    else # has right child
-      parent_node.replace_child(node, node.right)
+    else
+      parent_node.replace_child(node, node.left || node.right)
     end
   end
 
