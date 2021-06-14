@@ -88,6 +88,25 @@ class BinarySearchTree
     array
   end
 
+  # Use Morris Tree Traversal.
+  def each
+    current_root = root
+    while current_root
+      if current_root.left
+        current = current_root.left
+        current = current.right while current.right
+        current.right = current_root
+
+        temp = current_root
+        current_root = current_root.left
+        temp.left = nil
+      else
+        yield current_root.value
+        current_root = current_root.right
+      end
+    end
+  end
+
   private def find_node(value, parent: root, grand_parent: nil)
     return if parent.nil?
 
@@ -125,6 +144,11 @@ end
 # end
 
 # fail unless tree.to_array == arr.sort
+
+# sorted = tree.to_array
+# tree.each do |value|
+#   fail unless value == sorted.shift
+# end
 
 # while arr.any?
 #   value = arr.pop
