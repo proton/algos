@@ -4,6 +4,36 @@ class BinarySearchTreeNode
   def initialize(value)
     @value = value
   end
+
+  def has_children?
+    has_left_child? || has_right_child?
+  end
+
+  def has_both_children?
+    has_left_child? && has_right_child?
+  end
+
+  def has_no_children?
+    !has_children?
+  end
+
+  def has_left_child?
+    !!left
+  end
+
+  def has_right_child?
+    !!right
+  end
+
+  def replace_child(child, replacement)
+    if left == child
+      @left = replacement
+    elsif right == child
+      @right = replacement
+    else
+      raise ArgumentError, "Child not found"
+    end
+  end
 end
 
 class BinarySearchTree
@@ -28,17 +58,25 @@ class BinarySearchTree
 
   def delete(value)
     node, parent_node = find_node(value)
-    if node
-      if parent_node
-        if parent_node.left == node
-          parent_node.left = nil
-        else
-          parent_node.right = nil
-        end
-      else # it's root
-        @root = nil
-      end
-      @size -= 1
+    return if node.nil?
+    @size -= 1
+
+    if parent_node.nil? # it's root
+      @root = nil
+      return
+    end
+
+    if node.has_no_children?
+      parent_node.replace_child(node, nil)
+    elsif node.has_both_children?
+      successor = node.right
+      successor = successor.left while successor.left
+      node.value = successor.value
+      delete(successor.value)
+    elsif node.has_left_child?
+      parent_node.replace_child(node, node.left)
+    else # has right child
+      parent_node.replace_child(node, node.right)
     end
   end
 
@@ -92,9 +130,16 @@ end
 
 # fail unless tree.to_array == arr.sort
 
-# arr.each do |value|
+# while arr.any?
+#   value = arr.pop
 #   tree.delete(value)
 #   fail if tree.has?(value)
+
+#   arr.each do |value|
+#     fail unless tree.has?(value)
+#   end
+
+#   fail unless tree.to_array == arr.sort
 # end
 
 # fail unless tree.to_array == []
