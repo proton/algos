@@ -3,7 +3,7 @@ class Heap {
     this.data = values
     this.compare = compare
 
-    for (let i = Math.floor(this.data.length / 2) - 1; i >= 0; --i) {
+    for (let i = Math.floor(this.size / 2) - 1; i >= 0; --i) {
       this.#heapify(i)
     }
   }
@@ -11,7 +11,7 @@ class Heap {
   push(value) {
     this.data.push(value)
 
-    let i = this.data.length - 1
+    let i = this.size - 1
     let parentI = this.#parentIndex(i)
 
     while (i > 0 && this.compare(this.data[parentI], this.data[i]) < 0) {
@@ -21,21 +21,21 @@ class Heap {
     }
   }
 
-  max() {
+  get top() {
     return this.data[0]
   }
 
   pop() {
-    const value = this.max()
+    const value = this.top
     const last  = this.data.pop()
-    if (this.data.length > 0) {
+    if (this.size > 0) {
       this.data[0] = last
       this.#heapify(0)
     }
     return value
   }
 
-  length() {
+  get size() {
     return this.data.length
   }
 
@@ -53,10 +53,10 @@ class Heap {
       const rightChild = 2 * i + 2
       let largestChild = i
 
-      if (leftChild < this.length() && this.compare(this.data[largestChild], this.data[leftChild]) < 0) {
+      if (leftChild < this.size && this.compare(this.data[largestChild], this.data[leftChild]) < 0) {
         largestChild = leftChild
       }
-      if (rightChild < this.length() && this.compare(this.data[largestChild], this.data[rightChild]) < 0) {
+      if (rightChild < this.size && this.compare(this.data[largestChild], this.data[rightChild]) < 0) {
         largestChild = rightChild
       }
 
@@ -83,9 +83,9 @@ class Heap {
 // console.log(heap1.data)
 // console.log(heap3.data)
 
-// heaps.forEach(heap => console.assert(heap.max() === 10))
+// heaps.forEach(heap => console.assert(heap.top === 10))
 
-// while (heaps[0].length() > 0) {
-//   heaps.forEach(heap => console.assert(heap.max() === heaps[0].length()))
+// while (heaps[0].size > 0) {
+//   heaps.forEach(heap => console.assert(heap.top === heaps[0].size))
 //   console.assert(new Set(heaps.map(heap => heap.pop())).size === 1)
 // }
