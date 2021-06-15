@@ -1,6 +1,7 @@
 class Heap {
-  constructor(values = []) {
+  constructor(values = [], compare = (a, b) => a - b) {
     this.data = values
+    this.compare = compare
 
     for (let i = Math.floor(this.data.length / 2) - 1; i >= 0; --i) {
       this.#heapify(i)
@@ -13,7 +14,7 @@ class Heap {
     let i = this.data.length - 1
     let parentI = this.#parentIndex(i)
 
-    while (i > 0 && this.data[parentI] < this.data[i]) {
+    while (i > 0 && this.compare(this.data[parentI], this.data[i]) < 0) {
       this.#swap(i, parentI)
       i = parentI
       parentI = this.#parentIndex(i)
@@ -52,10 +53,10 @@ class Heap {
       const rightChild = 2 * i + 2
       let largestChild = i
 
-      if (leftChild < this.length() && this.data[leftChild] > this.data[largestChild]) {
+      if (leftChild < this.length() && this.compare(this.data[largestChild], this.data[leftChild]) < 0) {
         largestChild = leftChild
       }
-      if (rightChild < this.length() && this.data[rightChild] > this.data[largestChild]) {
+      if (rightChild < this.length() && this.compare(this.data[largestChild], this.data[rightChild]) < 0) {
         largestChild = rightChild
       }
 
